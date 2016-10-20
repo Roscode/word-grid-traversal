@@ -47,7 +47,7 @@ class AlphabetTree:
       return False
 
 words = ""
-with open('new_words.txt', 'r') as f:
+with open('valid_words.txt', 'r') as f:
   words = f.readlines()
 top = AlphabetTree('.')
 for word in words:
