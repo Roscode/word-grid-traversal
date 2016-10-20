@@ -7,6 +7,7 @@ class AlphabetTree:
     self.subtrees = []
 
   def insert(self, word):
+    """ A method to insert the given word into this alphabet tree """
     if word == "":
       self.endsWord = True
       return
@@ -21,6 +22,7 @@ class AlphabetTree:
       self.subtrees.append(newNode)
 
   def isValidWord(self, word):
+    """ Gives whether or not the given word is a valid word in this tree """
     if word == "":
       if self.endsWord:
        return True
@@ -34,6 +36,7 @@ class AlphabetTree:
       return False
 
   def beginsValidWord(self, word):
+    """ Gives whether """
     if word == "":
       return True
     if word[0] in [t.value for t in self.subtrees]:
@@ -43,13 +46,13 @@ class AlphabetTree:
     else:
       return False
 
-words_file_lines = ""
-with open('words.csv', 'r') as f:
-  words_file_lines = f.readlines()
-words = [col[1][6:].lower() for col in [line.split(',') for line in words_file_lines]]
+words = ""
+with open('new_words.txt', 'r') as f:
+  words = f.readlines()
 top = AlphabetTree('.')
 for word in words:
-  top.insert(word)
+  # each word ends with a \n so when inserting into the tree, we cut it off
+  top.insert(word[:-1])
 wordLookupTree = top
 
 
