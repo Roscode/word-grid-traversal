@@ -4,6 +4,7 @@ import words
 from collections import deque
 import string
 import random as r
+import time
 
 class Graph:
   """ An adjacency list implementation of graph """
@@ -63,10 +64,10 @@ def parseArgs(argv):
 def getGrid(rand):
   """ Warning, does not check correct row length, so put the correct number of numbers in """
   if not rand:
-    rows = input("Enter the number of rows: ")
+    rows = int(input("Enter the number of rows: "))
     result = []
     for i in range(rows):
-      result.append(raw_input("Enter row {0}: ".format(i + 1)).split())
+      result.append(input("Enter row {0}: ".format(i + 1)).split())
     return result
   result = [[r.choice(string.ascii_lowercase) for i in range(rand)] for j in range(rand)]
   return result
@@ -96,6 +97,39 @@ def findLongestWordTraversal(graph):
       q.appendleft((current_vertex, current_word))
   return lw
 
+def findLongestWordTraversal2(graph):
+  lw = ""
+  for v in graph.vertices:
+    q = deque()
+    q.appendleft((v, ""))
+
+    beginsCache = {}
+    isValidCache = {}
+
+    cache = {}
+    while (len(q) > 0):
+      current_vertex, wordSoFar = q.pop()
+      current_word = wordSoFar + current_vertex.value
+
+      if not current_word in beginsCache:
+        begins = words.wordLookupTree.beginsValidWord(current_word)
+        beginsCache[current_word] = begins
+
+      if not beginsCache[current_word]:
+          continue
+      
+      if len(lw) < len(current_word):
+        if current_word not in isValidCache:
+          isValid = words.wordLookupTree.isValidWord(current_word)
+          isValidCache[current_word] = isValid
+
+        if isValidCache[current_word]:
+            lw = current_word
+
+      for child in current_vertex.children:
+        q.appendleft((child, current_word))
+      q.appendleft((current_vertex, current_word))
+  return lw
 
 
 diagonals, random = parseArgs(sys.argv)
@@ -103,7 +137,16 @@ grid = getGrid(random)
 for i in grid:
   print(i)
 graph = Graph(grid, diagonals)
-longest_word = findLongestWordTraversal(graph)
-print(longest_word)
+
+start = time.time()
+print(findLongestWordTraversal(graph))
+end = time.time()
+print(round(end - start, 4), "seconds")
+
+start = time.time()
+print(findLongestWordTraversal2(graph))
+end = time.time()
+print(round(end - start, 4), "seconds")
+
 
 
