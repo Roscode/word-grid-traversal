@@ -48,7 +48,7 @@ def parseArgs(argv):
     # e.g. ./gridwords.py --diagonal-on --random 6
     # produces a random 6x6 board
     # ./gridwords.py --random 4 produces random 4x4 board without diagonal traversal
-    print "Usage: ./gridwords.py [--diagonal-on] [--random n]"
+    print("Usage: ./gridwords.py [--diagonal-on] [--random n]")
   if (len(argv) >= 2 and argv[1] == "--diagonal-on"):
     diags = True
   if (len(argv) >= 2):
@@ -101,9 +101,9 @@ def findLongestWordTraversal(graph):
 diagonals, random = parseArgs(sys.argv)
 grid = getGrid(random)
 for i in grid:
-  print i
+  print(i)
 graph = Graph(grid, diagonals)
 longest_word = findLongestWordTraversal(graph)
-print longest_word
+print(longest_word)
 
 
