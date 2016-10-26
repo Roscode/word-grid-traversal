@@ -63,10 +63,10 @@ def parseArgs(argv):
 def getGrid(rand):
   """ Warning, does not check correct row length, so put the correct number of numbers in """
   if not rand:
-    rows = input("Enter the number of rows: ")
+    rows = eval(input("Enter the number of rows: "))
     result = []
     for i in range(rows):
-      result.append(raw_input("Enter row {0}: ".format(i + 1)).split())
+      result.append(input("Enter row {0}: ".format(i + 1)).split())
     return result
   result = [[r.choice(string.ascii_lowercase) for i in range(rand)] for j in range(rand)]
   return result
