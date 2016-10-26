@@ -2,6 +2,8 @@
 import sys
 import words
 from collections import deque
+import string
+import random as r
 
 class Graph:
   """ An adjacency list implementation of graph """
@@ -40,20 +42,41 @@ class Node:
 
 
 def parseArgs(argv):
-  if (len(argv) > 2):
-    print "Usage: gridwords [--diagonal-on], defaulting to no diagonals"
-  if (len(argv) == 2 and argv[1] == "--diagonal-on"):
-    return True
-  return False
+  diags = False
+  rand = 0
+  if (len(argv) > 4 or (len(argv) >= 2 and (argv[1] == '-h' or argv[1] == '--help'))):
+    # e.g. ./gridwords.py --diagonal-on --random 6
+    # produces a random 6x6 board
+    # ./gridwords.py --random 4 produces random 4x4 board without diagonal traversal
+    print "Usage: ./gridwords.py [--diagonal-on] [--random n]"
+  if (len(argv) >= 2 and argv[1] == "--diagonal-on"):
+    diags = True
+  if (len(argv) >= 2):
+    if (argv[1] == "--random"):
+      rand = int(argv[2])
+    if (len(argv) >= 3 and argv[2] == "--random"):
+      rand = int(argv[3])
+  return diags, rand
 
 
-def getGrid():
-  return [
-    ['a', 's', 'm', 'g', 'e'],
-    ['f', 'e', 'o', 'n', 'l'],
-    ['k', 't', 'h', 'i', 'd'],
-    ['p', 'q', 'r', 'o', 'o'],
-    ['u', 'v', 'w', 'x', 'y']]
+
+def getGrid(rand):
+  """ Warning, does not check correct row length, so put the correct number of numbers in """
+  if not rand:
+    rows = input("Enter the number of rows: ")
+    result = []
+    for i in range(rows):
+      result.append(raw_input("Enter row {0}: ".format(i + 1)).split())
+    return result
+  result = [[r.choice(string.ascii_lowercase) for i in range(rand)] for j in range(rand)]
+  return result
+
+#  return [
+#    ['a', 's', 'm', 'g', 'e'],
+#    ['f', 'e', 'o', 'n', 'l'],
+#    ['k', 't', 'h', 'i', 'd'],
+#    ['p', 'q', 'r', 'o', 'o'],
+#    ['u', 'v', 'w', 'x', 'y']]
 
 
 def findLongestWordTraversal(graph):
@@ -70,12 +93,15 @@ def findLongestWordTraversal(graph):
         lw = current_word
       for child in current_vertex.children:
         q.appendleft((child, current_word))
+      q.appendleft((current_vertex, current_word))
   return lw
 
 
 
-diagonals = parseArgs(sys.argv)
-grid = getGrid()
+diagonals, random = parseArgs(sys.argv)
+grid = getGrid(random)
+for i in grid:
+  print i
 graph = Graph(grid, diagonals)
 longest_word = findLongestWordTraversal(graph)
 print longest_word
